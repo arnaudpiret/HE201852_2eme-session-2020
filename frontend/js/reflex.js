@@ -78,3 +78,23 @@ function stopTimer(){
 clearTimeout(time);
 time=0;
 }
+//*************//
+function onloadPage(){
+	document.getElementById("formulaireUser").addEventListener("submit",formSubmit);	
+}
+
+function formSubmit (event){
+	event.preventDefault();
+	envoieAjax(this.UserName.value,this.UserNaissance.value);
+	console.log(this.UserName.value,this.UserNaissance.value); //temporaire
+}
+
+function envoieAjax(userName,userNaissance){
+let xhr= new XMLHttpRequest();
+	let webService="formVerif";
+
+	xhr.open('get',"webService"+"?p="+document.getElementById('UserName').value+"&n="+document.getElementById('UserNaissance').value,true);
+	xhr.onload= function(){let reponse =JSON.parse(this.responseText);
+		document.getElementById("reponseformulaire").innerHTML= reponse;}
+	xhr.send();
+}
