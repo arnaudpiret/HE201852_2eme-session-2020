@@ -10,9 +10,19 @@ function afficherRandom(){
 			time=0;
 			let resultaffiche ="";
 			for(let l=1;l<resultat.length+1;l++){
-				resultaffiche+= " essai "+l+": "+resultat[l-1] +"<br>";
+				if(resultat[l-1]!='echec'){
+					resultaffiche+= " essai "+l+": "+resultat[l-1]+" millisecondes" +"<br>";
+				}
+				else{resultaffiche+= " essai "+l+": echec de l'essai <br>";}
 				console.log(resultaffiche); 
 			}
+			let resultatTri= resultat.filter(unit => unit !='echec');
+			let somme=0;
+			for (let i=0 ;i<resultatTri.length;i++){
+				somme+= resultatTri[i];
+			}
+			let moyenne = Math.round((somme/resultatTri.length)*100)/100
+			resultaffiche += "<br>moyenne : "+moyenne+" millisecondes";
 			document.getElementById("resultat").innerHTML = resultaffiche;
 			resultat=[];
 		}
@@ -49,7 +59,7 @@ function action(){
 			alert("vous avez mis "+Math.round((i*10)+(i*1.15))+" millisecondes a repondre.Bravo ! cela est plus rapide que la moyenne mondial ");
 		 }
 		 else{alert("vous avez mis "+Math.round((i*10)+(i*1.15))+" millisecondes a repondre")}
-		resultat.push(Math.round((i*10)+(i*1.15))+" millisecondes"); // le i*1.15 ajouté au resultat est due au temp que l'ordinateur met a executer la boucle "startTimer" (+-1.15ms ) (temp calculé en faisant correspondre l'evoltion de i a un chronometre sur une duree de 10 min)
+		resultat.push(Math.round((i*10)+(i*1.15))); // le i*1.15 ajouté au resultat est due au temp que l'ordinateur met a executer la boucle "startTimer" (+-1.15ms ) (temp calculé en faisant correspondre l'evoltion de i a un chronometre sur une duree de 10 min)
 		 i=0;
 		document.getElementById("case1").style.backgroundColor= "red" ;
 		document.getElementById("afficherRng").innerHTML = "retry";
@@ -78,7 +88,10 @@ function stopTimer(){
 clearTimeout(time);
 time=0;
 }
-//*************//
+
+
+document.addEventListener('DOMContentLoaded',onloadPage);
+
 function onloadPage(){
 	document.getElementById("formulaireUser").addEventListener("submit",formSubmit);	
 }
@@ -86,15 +99,15 @@ function onloadPage(){
 function formSubmit (event){
 	event.preventDefault();
 	envoieAjax(this.UserName.value,this.UserNaissance.value);
-	console.log(this.UserName.value,this.UserNaissance.value); //temporaire
+	console.log(this.UserName.value,this.UserNaissance.value); 
 }
 
 function envoieAjax(userName,userNaissance){
 let xhr= new XMLHttpRequest();
-	let webService="formVerif";
+	let webService="localhost:81/formVerif";
 
-	xhr.open('get',"webService"+"?p="+document.getElementById('UserName').value+"&n="+document.getElementById('UserNaissance').value,true);
-	xhr.onload= function(){let reponse =JSON.parse(this.responseText);
-		document.getElementById("reponseformulaire").innerHTML= reponse;}
+	xhr.open('get',webService+"?p="+document.getElementById('UserName').value+"&n="+document.getElementById('UserNaissance').value,true);
+	xhr.onload= function(){
+		console.log("salut");}
 	xhr.send();
 }
